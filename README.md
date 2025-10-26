@@ -49,6 +49,10 @@ API Marketplace is an intelligent search platform that aggregates OpenAPI specif
 git clone https://github.com/yourusername/api-spec-rag.git
 cd api-spec-rag
 
+uv venv --python 3.12.0
+source .venv/bin/activate
+uv pip sync requirements.txt
+
 # Install dependencies
 npm install
 

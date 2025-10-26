@@ -1,0 +1,759 @@
+openapi: 3.0.3
+info:
+  title: OpenAPI для приложения автомойки
+  contact:
+    email: api-support@washer-sakh.ru
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+externalDocs:
+  description: Github
+  url: https://github.com/ErCheo/4
+  
+servers:
+  - url: http://localhost:3000/
+tags:
+  - name: user
+    description: Операции с клиентом
+  - name: order
+    description: Записи заказов
+  - name: washer
+    description: Работа с автомойками
+  - name: service
+    description: Услуги
+  
+paths:
+  /user:
+    post:
+      tags:
+        - user
+      summary: Создать нового пользователя
+      description: Создание нового пользователя
+      operationId: createUser
+      requestBody:
+        description: Объект нового пользователя
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Пользователь создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Данный пользователь уже существует
+  /users:
+    get:
+      tags:
+        - user
+      summary: Получить список всех пользователей
+      description: Выводит список id зарегистрированных пользователй
+      operationId: getUsers
+      responses:
+        '200':
+          description: Операция прошла успешно
+          content:
+            application/json:
+                schema:
+                  $ref: '#/components/schemas/IdArray'
+            application/xml:
+                schema:
+                  $ref: '#/components/schemas/IdArray'
+            application/x-www-form-urlencoded:
+                schema:
+                  $ref: '#/components/schemas/IdArray'
+  /user/{UserId}:
+    get:
+      tags:
+        - user
+      summary: Получить конкретного пользователя
+      description: Получить пользователя по id
+      operationId: getUserById
+      parameters:
+        - name: UserId
+          in: path
+          description: id пользователя
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Пользователь найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Неправильный формат id
+        '404':
+          description: Пользователь с таким id не найден
+    put:
+      tags:
+        - user
+      summary: Изменить данные конкретного пользователя
+      description: Изменение данных пользователя
+      operationId: updateUserById
+      parameters:
+        - name: UserId
+          in: path
+          description: id пользователя
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Объект обновленного пользователя
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+            description: Операция прошла успешно
+        '400':
+          description: Неверный формат id
+        '404':
+          description: Пользователь не найден
+    delete:
+      tags:
+        - user
+      summary: Удалить конкретного пользователя
+      description: Удаляет пользователя из системы по его id
+      operationId: deleteUserbyId
+      parameters:
+        - name: UserId
+          in: path
+          description: id пользователя
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Пользователь удален
+        '400':
+          description: Не правильный формат ввода id
+        '404':
+          description: Пользователь не найден
+  /washer:
+    post:
+      tags:
+       - washer
+      summary: Добавить новую автомойку
+      description: Добавление новой автомойки
+      operationId: createWasher
+      requestBody:
+        description: Объект новой автомойки
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Washer'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Washer'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Washer'
+      responses:
+        '200':
+          description: Операция проведена успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Washer'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Washer'
+        '400':
+          description: Данная автомойка уже существует
+  /washers:
+    get:
+        tags:
+          - washer
+        summary: Получить список всех автомоек
+        description: Выводит список с объектами автомоек
+        operationId: getWashers
+        responses:
+          '200':
+            description: Операция прошла успешно
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/WashersList'
+              application/xml:
+                schema:
+                  $ref: '#/components/schemas/WashersList'
+              application/x-www-form-urlencoded:
+                schema:
+                  $ref: '#/components/schemas/WashersList'
+  /washer/{WasherId}:
+    get:
+      tags:
+        - washer
+      summary: Получить данные конкретной автомойки
+      description: Получить автомойку по id
+      operationId: getWasherById
+      parameters:
+        - name: WasherId
+          in: path
+          description: id автомойки
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Операция прошла успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Washer'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Washer'
+        '400':
+          description: Неправильный формат id
+        '404':
+          description: Автомойка с таким id не найдена
+    put:
+      tags:
+        - washer
+      summary: Изменить данные конкретной автомойки
+      description: Изменение данных автомойки
+      operationId: updateWasherById
+      parameters:
+        - name: WasherId
+          in: path
+          description: id автомойки
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Объект обновленной автомойки
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Washer'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Washer'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Washer'
+      responses:
+        '200':
+            description: Данные автомойки обновлены
+        '400':
+          description: Неверный формат объекта автомойки
+        '404':
+          description: Автомойка не найдена
+    delete:
+      tags:
+        - washer
+      summary: Удалить конкретную автомойку
+      description: Удаляет автомойку по id
+      operationId: deleteWasherById
+      parameters:
+        - name: WasherId
+          in: path
+          description: id автомойки
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Автомойка удалена
+        '400':
+          description: Не правильный формат ввода id
+        '404':
+          description: Автомойка не найдена
+  /order:
+    post:
+      tags:
+        - order
+      summary: Сформировать новый заказ
+      description: Формирование заказа пользователя
+      operationId: createOrder
+      requestBody:
+        description: Объект нового заказа
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Order'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Order'
+      responses:
+        '200':
+          description: Заказ создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400':
+          description: Данный заказ уже существует
+  /orders:
+    get:
+        tags:
+          - order
+        summary: Получить список всех заказов
+        description: Выводит список объектов заказов
+        operationId: getOrders
+        responses:
+          '200':
+            description: Операция прошла успешно
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/OrdersList' 
+              application/xml:
+                schema:
+                  $ref: '#/components/schemas/OrdersList'
+              application/x-www-form-urlencoded:
+                schema:
+                  $ref: '#/components/schemas/OrdersList'
+  /orders/{UserId}:
+    get:
+        tags:
+          - order
+        summary: Получить список заказов конкретного пользователя
+        description: Выводит список объектов заказов по UserId
+        operationId: getOrdersByUserId
+        parameters:
+          - name: UserId
+            in: path
+            description: id пользователя
+            required: true
+            schema:
+              type: integer
+              format: int64
+        responses:
+          '200':
+            description: Операция прошла успешно
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/OrdersList' 
+              application/xml:
+                schema:
+                  $ref: '#/components/schemas/OrdersList'
+              application/x-www-form-urlencoded:
+                schema:
+                  $ref: '#/components/schemas/OrdersList'
+          '404':
+            description: Пользователь не найден
+  /order/{OrderId}:
+    get:
+      tags:
+        - order
+      summary: Получить информацию о заказе 
+      description: Получить заказ по его id
+      operationId: getOrderById
+      parameters:
+        - name: OrderId
+          in: path
+          description: id заказа
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Заказ найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400':
+          description: Неправильный формат id
+        '404':
+          description: Заказ с таким id не найден
+    put:
+      tags:
+        - order
+      summary: Отредактировать заказ 
+      description: Изменение данных о заказе
+      operationId: updateOrderById
+      parameters:
+        - name: OrderId
+          in: path
+          description: id заказа
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Объект обновленного заказа
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Order'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Order'
+      responses:
+        '200':
+            description: Заказ обновлен
+        '400':
+          description: Не правильный формат ввода id
+        '404':
+          description: Заказ не найден
+    delete:
+      tags:
+        - order
+      summary: Удалить заказ
+      description: Удаляет заказ по id
+      operationId: deleteOrderbyId
+      parameters:
+        - name: OrderId
+          in: path
+          description: id заказа
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Заказ удален
+        '400':
+          description: Не правильный формат ввода id
+        '404':
+          description: Заказ не найден
+  /order/{OrderId}/pay:
+    post:
+      tags:
+        - order
+      summary: Оплатить заказ
+      description: Оплата заказа с использованием платежной онлайн системы
+      operationId: payOrder
+      parameters:
+        - name: OrderId
+          in: path
+          description: id заказа
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Заказ оплачен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400':
+          description: Заказ уже оплачен
+        '404':
+          description: Заказ не найден
+  /service:
+    post:
+      tags:
+        - service
+      summary: Добавить новую услугу
+      description: Добавление новой услуги
+      operationId: createService
+      requestBody:
+        description: Объект новой услуги
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Service'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Service'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Service'
+      responses:
+        '200':
+          description: Услуга создана
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Service'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Service'
+        '400':
+          description: Данная услуга уже существует
+  /services:
+    get:
+      tags:
+        - service
+      summary: Получить список всех услуг
+      description: Выводит список услуг
+      operationId: getServices
+      responses:
+        '200':
+          description: Операция прошла успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServicesList'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ServicesList'
+            application/x-www-form-urlencoded:
+              schema:
+                $ref: '#/components/schemas/ServicesList'
+  /service/{ServiceId}:
+    get:
+      tags:
+        - service
+      summary: Получить информацию об услуге
+      description: Получить услугу по id
+      operationId: getServiceById
+      parameters:
+        - name: ServiceId
+          in: path
+          description: id услуги
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Операция прошла успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Service'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Service'
+        '400':
+          description: Неправильный формат id
+        '404':
+          description: Услуга с таким id не найдена
+    put:
+      tags:
+        - service
+      summary: Изменить данные услуги
+      description: Изменение данных услуги
+      operationId: updateServiceById
+      parameters:
+        - name: ServiceId
+          in: path
+          description: id услуги
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Объект обновленной услуги
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+            description: Данные услуги обновлены
+        '400':
+            description: Не правильный формат ввода id
+        '404':
+            description: Услуга не найдена
+    delete:
+      tags:
+        - service
+      summary: Удалить услугу
+      description: Удаляет услугу по id
+      operationId: deleteServiceById
+      parameters:
+        - name: ServiceId
+          in: path
+          description: id услуги
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Услуга удалена
+        '400':
+          description: Не правильный формат ввода id
+        '404':
+          description: Услуга не найдена        
+  
+    
+    
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        name:
+          type: string
+          example: Петров Пётр Петрович
+        phone:
+          type: string
+          description: Контактный номер клиента
+          example: +7(9XX)XXX-XX-XX
+        gos_number:
+          type: string
+          description: Гос. номер автомобиля 
+          example: x111xx65rus
+      xml:
+        name: user
+    IdArray:
+      type: object
+      properties:
+        id:
+          type: array
+          items:
+            type: integer
+            format: int64
+            example: 10
+      xml:
+        name: usersArray
+    UsersList:
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+      xml:
+        name: userslist
+    WashersList:
+      type: object
+      properties:
+        washers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Washer'
+      xml:
+        name: washerlist
+    OrdersList:
+      type: object
+      properties:
+        orders:
+          type: array
+          items:
+            $ref: '#/components/schemas/Order'
+    ServicesList:
+      type: object
+      properties:
+        services:
+          type: array
+          items:
+            $ref: '#/components/schemas/Service'
+    Washer:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 111
+        longtitude:
+          type: number
+          example: 77.59
+        latitude:
+          type: number
+          example: 39.11
+        address:
+          type: string
+          example: "Ул. Ленина, д. 222"
+        services:
+          type: array
+          items:
+            $ref: '#/components/schemas/Service'
+      xml:
+        name: washer
+    Order:
+      type: object
+      properties:
+        id: 
+          type: integer
+          format: int64
+          example: 123
+        client_id: 
+          type: integer
+          format: int64
+          example: 123
+        washer_id: 
+          type: integer
+          format: int64
+          example: 123
+        service_id: 
+          type: integer
+          format: int64
+          example: 123
+        amount: 
+          type: integer
+          format: int64
+          example: 10000
+        date_time: 
+          type: string
+          format: date-time
+        paid:
+          type: boolean
+        complete: 
+          type: boolean
+      xml:
+        name: order
+    Service:
+      type: object
+      properties:
+        id: 
+          type: integer
+          format: int64
+          example: 123
+        name:
+          type: string
+          example: Помыть авто
+        amount: 
+          type: integer
+          format: int64
+          example: 10000
+      xml:
+        name: service
